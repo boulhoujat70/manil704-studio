@@ -171,7 +171,7 @@ body {
   margin: 0 auto;
 }
 .message {
-  padding: 12px 18px;
+  padding: 14px 20px;
   border-radius: 8px;
   max-width: 80%;
   line-height: 1.6;
@@ -186,6 +186,14 @@ body {
   background: var(--hull);
   border: 1px solid var(--wire);
   align-self: flex-start;
+}
+.message b, .message strong {
+  color: var(--cyan);
+  font-weight: 600;
+}
+.message i, .message em {
+  color: #b0a89d;
+  font-style: italic;
 }
 
 /* INPUT AREA */
@@ -471,6 +479,16 @@ function generate21Agents() {
   `).join('');
 }
 
+// Interpréteur Markdown Simplifié et Robuste
+function parseMarkdown(text) {
+  let html = text;
+  // Conversion du gras (**texte**)
+  html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  // Conversion de l'italique (*texte*)
+  html = html.replace(/\*(.*?)\*/g, '<i>$1</i>');
+  return html;
+}
+
 function renderWelcome() {
   $("msg-list").innerHTML = `
     <div class="message assistant">
@@ -500,7 +518,7 @@ async function sendMessage() {
       headers: { "Authorization": "Bearer " + state.apiKey, "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "mistral-large-2512",
-        messages: [{ role: "system", content: "Tu es MANIL704 Studio Intelligence, une IA connectée à un écosystème de 21 agents spécialisés dans la monétisation, l'écriture de C-Dramas/K-Dramas et la création de formats TikTok de plus de 61 secondes." }, ...state.messages]
+        messages: [{ role: "system", content: "Tu es MANIL704 Studio Intelligence, une IA connectée à un écosystème de 21 agents spécialisés dans la monétisation, l'écriture de C-Dramas/K-Dramas et la création de formats TikTok de plus de 61 secondes. Utilise toujours le format Markdown (* pour l'italique et ** pour le gras) pour structurer tes dialogues et tes indications temporelles." }, ...state.messages]
       })
     });
     
@@ -518,7 +536,7 @@ function renderMessages() {
   $("msg-list").innerHTML = state.messages.map(m => `
     <div class="message ${m.role}">
       <div style="font-size:10px; color:var(--cyan); margin-bottom:4px; font-weight:600;">${m.role==='user'?'▸ UNIQUE DIRECTIVE':'▸ STUDIO INTELLIGENCE'}</div>
-      <div style="white-space: pre-wrap;">${m.content}</div>
+      <div style="white-space: pre-wrap;">${parseMarkdown(m.content)}</div>
     </div>
   `).join('');
   $("chat-container").scrollTop = $("chat-container").scrollHeight;
