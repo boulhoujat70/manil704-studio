@@ -1,25 +1,534 @@
-<div class="wizard-logo">MANIL704</div>
-<div class="wizard-sub">STUDIO AI PLATFORM v3.0</div>
+<!DOCTYPE html>
+<html lang="fr" data-theme="cyber">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>MANIL704 STUDIO — Central Intelligence</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   MANIL704 DESIGN SYSTEM — DARK LUXURY & OR
+   ═══════════════════════════════════════════ */
+:root {
+  --void: #050505;
+  --deep: #0D0D0D;
+  --hull: #121212;
+  --plate: #1A1A1A;
+  --grid: #221F1A;
+  --wire: #332C1F;
+  --cyan: #D4AF37; 
+  --cyan-dim: rgba(212, 175, 55, 0.12);
+  --cyan-glow: rgba(212, 175, 55, 0.35);
+  --text: #E5E5E5;
+  --text-bright: #FFFFFF;
+  --text-dim: #7A7265;
+  --danger: #ff3366;
+  --success: #00ff9d;
+  --font-display: 'Orbitron', monospace;
+  --font-mono: 'Share Tech Mono', monospace;
+  --font-body: 'Exo 2', sans-serif;
+  --hud-border: 1px solid rgba(212,175,55,0.2);
+  --scanline: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(212,175,55,0.015) 2px, rgba(212,175,55,0.015) 4px);
+}
 
-<div class="dots-container">
-  <div class="dot active"></div>
-  <div class="dot"></div>
-  <div class="dot"></div>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--void);
+  color: var(--text);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-image: var(--scanline), radial-gradient(ellipse 80% 50% at 50% -20%, rgba(212,175,55,0.06) 0%, transparent 60%);
+}
+
+/* HEADER */
+#studio-header {
+  background: var(--deep);
+  border-bottom: var(--hud-border);
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  flex-shrink: 0;
+  z-index: 10;
+}
+.brand-name {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--text-bright);
+  letter-spacing: 4px;
+  text-shadow: 0 0 15px rgba(212,175,55,0.4);
+}
+.hud-select {
+  background: var(--hull);
+  border: var(--hud-border);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 6px 10px;
+  border-radius: 4px;
+  outline: none;
+}
+.hud-btn {
+  background: var(--hull);
+  border: var(--hud-border);
+  color: var(--cyan);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.status-pill {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  background: var(--hull);
+  border: 1px solid #333;
+  color: #777;
+}
+.status-pill.active {
+  border-color: rgba(0,255,157,0.4);
+  color: var(--success);
+  background: rgba(0, 255, 157, 0.1);
+}
+
+/* APP LAYOUT */
+#main-layout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* SIDEBAR AGENTS */
+#agents-sidebar {
+  width: 260px;
+  background: var(--deep);
+  border-right: var(--hud-border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+.sidebar-title {
+  font-family: var(--font-display);
+  font-size: 11px;
+  color: var(--cyan);
+  padding: 15px;
+  border-bottom: 1px solid var(--wire);
+  letter-spacing: 1px;
+}
+.agents-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+}
+.agent-item {
+  padding: 8px 12px;
+  background: var(--hull);
+  border: 1px solid var(--wire);
+  border-radius: 4px;
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-family: var(--font-mono);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.agent-tag {
+  font-size: 9px;
+  background: var(--cyan-dim);
+  border: 1px solid rgba(212,175,55,0.4);
+  color: var(--cyan);
+  padding: 1px 4px;
+  border-radius: 2px;
+}
+
+/* CHAT SPACE */
+#chat-space {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--void);
+  position: relative;
+}
+#chat-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+#msg-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 850px;
+  margin: 0 auto;
+}
+.message {
+  padding: 12px 18px;
+  border-radius: 8px;
+  max-width: 80%;
+  line-height: 1.6;
+}
+.message.user {
+  background: rgba(212,175,55,0.08);
+  border: 1px solid var(--cyan);
+  align-self: flex-end;
+  margin-left: auto;
+}
+.message.assistant {
+  background: var(--hull);
+  border: 1px solid var(--wire);
+  align-self: flex-start;
+}
+
+/* INPUT AREA */
+#input-area {
+  background: var(--deep);
+  border-top: var(--hud-border);
+  padding: 15px;
+  display: flex;
+  gap: 10px;
+}
+#user-input {
+  flex: 1;
+  background: var(--hull);
+  border: 1px solid var(--wire);
+  color: #fff;
+  padding: 10px 15px;
+  border-radius: 6px;
+  outline: none;
+}
+#send-btn {
+  background: var(--cyan);
+  color: #000;
+  font-weight: 700;
+  font-family: var(--font-display);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* SETUP WIZARD OVERLAY */
+#setup-wizard-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 5, 5, 0.95);
+  z-index: 3000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+}
+#setup-wizard-overlay.active {
+  display: flex;
+}
+.wizard-box {
+  background: var(--deep);
+  border: var(--hud-border);
+  width: 100%;
+  max-width: 600px;
+  border-radius: 8px;
+  padding: 35px;
+  box-shadow: 0 0 50px rgba(212,175,55,0.15);
+  text-align: center;
+  position: relative;
+}
+.wizard-logo {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: 6px;
+  color: var(--text-bright);
+  text-shadow: 0 0 20px rgba(212,175,55,0.5);
+  margin-bottom: 5px;
+}
+.wizard-sub {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--cyan);
+  letter-spacing: 2px;
+  margin-bottom: 30px;
+}
+.wizard-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 10px;
+}
+.wizard-text {
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.6;
+  margin-bottom: 25px;
+}
+.field-group {
+  text-align: left;
+  margin-bottom: 20px;
+}
+.field-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 8px;
+  display: block;
+}
+.field-input {
+  width: 100%;
+  background: var(--hull);
+  border: var(--hud-border);
+  color: #fff;
+  padding: 12px;
+  border-radius: 6px;
+  outline: none;
+  font-size: 14px;
+}
+.field-input:focus {
+  border-color: var(--cyan);
+}
+.wizard-btn {
+  width: 100%;
+  background: linear-gradient(135deg, rgba(212,175,55,0.2), rgba(212,175,55,0.05));
+  border: 1px solid var(--cyan);
+  color: var(--cyan);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-top: 15px;
+  transition: all 0.2s;
+}
+.wizard-btn:hover {
+  background: rgba(212,175,55,0.25);
+  box-shadow: 0 0 15px var(--cyan-glow);
+}
+.dots-container {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--wire);
+}
+.dot.active {
+  background: var(--cyan);
+  box-shadow: 0 0 8px var(--cyan);
+}
+</style>
+</head>
+<body>
+
+<header id="studio-header">
+  <div class="brand">
+    <span class="brand-name">MANIL704 STUDIO</span>
+  </div>
+  <div style="display:flex; gap:12px; align-items:center;">
+    <select id="model-select" class="hud-select">
+      <option value="codestral-2508">💻 CodeForge (Codestral) — v3.0</option>
+      <option value="mistral-large-2512">🔥 Mistral Omega — Large</option>
+    </select>
+    <span id="global-status" class="status-pill">OFFLINE</span>
+    <button class="hud-btn" id="btn-clear">⌫ CLEAR</button>
+    <button class="hud-btn" id="btn-new">+ NEW</button>
+  </div>
+</header>
+
+<div id="main-layout">
+  <aside id="agents-sidebar">
+    <div class="sidebar-title">⬡ EQUIPE TECHNIQUE (21)</div>
+    <div class="agents-list" id="sidebar-agents-list">
+      <div style="color:var(--text-dim); font-size:11px; padding:10px; text-align:center;">En attente de configuration...</div>
+    </div>
+  </aside>
+
+  <section id="chat-space">
+    <div id="chat-container">
+      <div id="msg-list"></div>
+    </div>
+    
+    <div id="input-area">
+      <input type="text" id="user-input" placeholder="Transmettez vos directives à vos agents ou collez vos résumés...">
+      <button id="send-btn">SEND ▶</button>
+    </div>
+  </section>
 </div>
 
-<div class="wizard-title">Bienvenue sur ton Studio IA</div>
-<div class="wizard-text">
-  Ton outil de pilotage stratégique configuré pour MANIL704. Commençons par activer ton accès Mistral AI pour générer ton équipe d'agents.
+<div id="setup-wizard-overlay" class="active">
+  <div class="wizard-box">
+    <div class="wizard-logo">MANIL704</div>
+    <div class="wizard-sub">STUDIO AI PLATFORM v3.0</div>
+    
+    <div class="dots-container">
+      <div class="dot active"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+
+    <div class="wizard-title">Bienvenue sur ton Studio IA</div>
+    <div class="wizard-text">
+      Ton outil de pilotage stratégique configuré pour MANIL704. Commençons par activer ton accès Mistral AI pour générer ton équipe d'agents.
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">🔑 Clé API Mistral *</label>
+      <input type="password" id="wizard-api-key" class="field-input" placeholder="Collez votre clé API Mistral ici (sk-...)">
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">⚙ Nom de ton Workspace / IA *</label>
+      <input type="text" id="wizard-ia-name" class="field-input" value="MANIL704">
+    </div>
+
+    <button class="wizard-btn" id="wizard-continue-btn">Continuer ➔</button>
+  </div>
 </div>
 
-<div class="field-group">
-  <label class="field-label">🔑 Clé API Mistral *</label>
-  <input type="password" id="wizard-api-key" class="field-input" placeholder="Collez votre clé API Mistral ici (sk-...)">
-</div>
+<script>
+const OFFICIAL_21_AGENTS = [
+  { name: "Monétisation Tiktok", tag: "Business" },
+  { name: "Scénariste C-Drama", tag: "Script" },
+  { name: "Analyseur Rétention 61s", tag: "Analyse" },
+  { name: "Générateur de Hooks", tag: "Marketing" },
+  { name: "Optimiseur de Live", tag: "Live" },
+  { name: "Spécialiste K-Drama", tag: "Script" },
+  { name: "Créateur de Titres Viraux", tag: "SEO" },
+  { name: "Concepteur Miniatures", tag: "Design" },
+  { name: "Analyseur de Concurrence", tag: "Data" },
+  { name: "Rédacteur Description", tag: "Tiktok" },
+  { name: "Planificateur de Live", tag: "Stratégie" },
+  { name: "Gestionnaire Clifhangers", tag: "Structure" },
+  { name: "Auditeur Rythme Vidéo", tag: "Montage" },
+  { name: "Tracker de Algorithme", tag: "Analyse" },
+  { name: "Traducteur Sous-titres", tag: "Contenu" },
+  { name: "Optimiseur Tunnel d'Abonnement", tag: "Conversion" },
+  { name: "Spécialiste Trafic manil704.fr", tag: "Redirection" },
+  { name: "Modérateur Chat Automatique", tag: "Live" },
+  { name: "Générateur Idées Tendances", tag: "Viral" },
+  { name: "Expert Rétention Audio", tag: "Musique" },
+  { name: "Superviseur Central Intelligence", tag: "Core" }
+];
 
-<div class="field-group">
-  <label class="field-label">⚙ Nom de ton Workspace / IA *</label>
-  <input type="text" id="wizard-ia-name" class="field-input" value="MANIL704">
-</div>
+let state = { apiKey: localStorage.getItem('manil_key') || '', messages: [] };
 
-<button class="wizard-btn" id="wizard-continue-btn">Continuer ➔</button>
+const $ = s => document.getElementById(s);
+
+if (state.apiKey) {
+  $("global-status").classList.add("active");
+  $("global-status").innerHTML = "● ONLINE";
+  $("setup-wizard-overlay").classList.remove("active");
+  generate21Agents();
+  renderWelcome();
+}
+
+$("wizard-continue-btn").onclick = function() {
+  const key = $("wizard-api-key").value.trim();
+  const name = $("wizard-ia-name").value.trim();
+
+  if (!key) {
+    alert("Veuillez coller votre clé API Mistral pour continuer.");
+    return;
+  }
+  if (!name) {
+    alert("Veuillez donner un nom à votre instance de travail.");
+    return;
+  }
+
+  localStorage.setItem('manil_key', key);
+  state.apiKey = key;
+
+  $("global-status").classList.add("active");
+  $("global-status").innerHTML = "● ONLINE";
+  $("setup-wizard-overlay").classList.remove("active");
+
+  generate21Agents();
+  renderWelcome();
+};
+
+function generate21Agents() {
+  const container = $("sidebar-agents-list");
+  container.innerHTML = OFFICIAL_21_AGENTS.map(agent => `
+    <div class="agent-item">
+      <span>◈ ${agent.name}</span>
+      <span class="agent-tag">${agent.tag}</span>
+    </div>
+  `).join('');
+}
+
+function renderWelcome() {
+  $("msg-list").innerHTML = `
+    <div class="message assistant">
+      <div style="font-size:10px; color:var(--cyan); margin-bottom:4px; font-weight:600;">▸ CENTRAL INTELLIGENCE</div>
+      <strong>Félicitations, installation validée !</strong> Ton équipe de 21 agents spécialisés a été déployée avec succès dans ton Workspace. Ton accès au modèle de Mistral AI est opérationnel. Transmets tes directives pour tes scripts de plus de 61 secondes ou tes stratégies de redirection !
+    </div>
+  `;
+}
+
+async function sendMessage() {
+  const txt = $("user-input").value.trim();
+  if (!txt) return;
+
+  state.messages.push({ role: "user", content: txt });
+  renderMessages();
+  $("user-input").value = "";
+
+  const typing = document.createElement("div");
+  typing.className = "message assistant";
+  typing.innerHTML = `<div style="font-size:10px; color:var(--cyan); margin-bottom:4px; font-weight:600;">▸ STUDIO INTELLIGENCE</div><div>Traitement en cours par vos agents experts...</div>`;
+  $("msg-list").appendChild(typing);
+  $("chat-container").scrollTop = $("chat-container").scrollHeight;
+
+  try {
+    const res = await fetch("https://api.mistral.ai/v1/chat/completions", {
+      method: "POST",
+      headers: { "Authorization": "Bearer " + state.apiKey, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "mistral-large-2512",
+        messages: [{ role: "system", content: "Tu es MANIL704 Studio Intelligence, une IA connectée à un écosystème de 21 agents spécialisés dans la monétisation, l'écriture de C-Dramas/K-Dramas et la création de formats TikTok de plus de 61 secondes." }, ...state.messages]
+      })
+    });
+    
+    typing.remove();
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+    state.messages.push({ role: "assistant", content: data.choices[0].message.content });
+    renderMessages();
+  } catch(e) {
+    typing.innerHTML = `<div style="font-size:10px; color:var(--danger); margin-bottom:4px; font-weight:600;">▸ STATUS ERROR</div><div>Erreur de communication avec l'API. Vérifie la validité de ta clé.</div>`;
+  }
+}
+
+function renderMessages() {
+  $("msg-list").innerHTML = state.messages.map(m => `
+    <div class="message ${m.role}">
+      <div style="font-size:10px; color:var(--cyan); margin-bottom:4px; font-weight:600;">${m.role==='user'?'▸ UNIQUE DIRECTIVE':'▸ STUDIO INTELLIGENCE'}</div>
+      <div style="white-space: pre-wrap;">${m.content}</div>
+    </div>
+  `).join('');
+  $("chat-container").scrollTop = $("chat-container").scrollHeight;
+}
+
+$("send-btn").onclick = sendMessage;
+$("user-input").onkeydown = function(e) { if (e.key === "Enter") sendMessage(); };
+
+$("btn-clear").onclick = () => { state.messages = []; renderWelcome(); };
+$("btn-new").onclick = () => { state.messages = []; renderWelcome(); };
+</script>
+</body>
+</html>
