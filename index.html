@@ -2,7 +2,7 @@
 <html lang="fr" data-theme="cyber">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>MANIL704 STUDIO — Central Intelligence</title>
 
 <link rel="manifest" href="manifest.json">
@@ -43,6 +43,7 @@ body {
   background: var(--void);
   color: var(--text);
   height: 100vh;
+  height: -webkit-fill-available;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -160,7 +161,7 @@ body {
   display: flex;
   flex-direction: column;
   background: var(--void);
-  position: relative;
+  overflow: hidden;
 }
 #chat-container {
   flex: 1;
@@ -204,13 +205,16 @@ body {
   display: block;
 }
 
+/* INPUT AREA AVEC ESPACE DE SECURITE MOBILE */
 #input-area {
   background: var(--deep);
   border-top: var(--hud-border);
-  padding: 12px;
+  padding: 12px 12px 24px 12px; /* Augmentation de la marge basse pour éviter la barre d'Android */
+  padding-bottom: calc(12px + env(safe-area-inset-bottom)); /* Gestion universelle des barres de navigation */
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-shrink: 0;
 }
 #user-input {
   flex: 1;
@@ -234,7 +238,6 @@ body {
   font-size: 12px;
 }
 
-/* Style spécifique pour la gestion de l'import visuel */
 .file-label-btn {
   background: var(--hull);
   border: var(--hud-border);
@@ -300,13 +303,13 @@ body {
 <header id="studio-header">
   <div class="brand" style="display: flex; align-items: center;">
     <button id="toggle-sidebar-btn" onclick="toggleSidebar()">☰ AGENTS</button>
-    <span class="brand-name">MANIL704 STUDIO</span>
+    <span class="brand-name">MANIL704</span>
   </div>
-  <div style="display:flex; gap:8px; align-items:center;">
+  <div style="display:flex; gap:6px; align-items:center;">
     <select id="model-select" class="hud-select">
-      <option value="mistral-large-2512">🔥 Mistral Omega (Vision) </option>
-      <option value="pixtral-12b-latest">👁️ Pixtral (Spécial Image)</option>
-      <option value="codestral-2508">💻 CodeForge (Texte seul)</option>
+      <option value="mistral-large-2512">🔥 Mistral Omega</option>
+      <option value="pixtral-12b-latest">👁️ Pixtral</option>
+      <option value="codestral-2508">💻 CodeForge</option>
     </select>
     <span id="global-status" class="status-pill">OFFLINE</span>
     <button class="hud-btn" id="btn-clear">⌫</button>
@@ -381,7 +384,7 @@ const OFFICIAL_21_AGENTS = [
 ];
 
 let state = { apiKey: localStorage.getItem('manil_key') || '', messages: [] };
-let currentBase64Image = null; // Stockage de l'image en cours
+let currentBase64Image = null;
 
 const $ = s => document.getElementById(s);
 
@@ -430,16 +433,15 @@ window.selectAgent = function(index) {
   $("user-input").focus();
 };
 
-// Gestion de la sélection du fichier image
 window.handleFileSelect = function(input) {
   const file = input.files[0];
   if (!file) return;
 
   const reader = new FileReader();
   reader.onload = function(e) {
-    currentBase64Image = e.target.result; // Récupère l'image convertie en Base64
+    currentBase64Image = e.target.result;
     $("file-label").classList.add("has-file");
-    $("file-label").innerHTML = "✓"; // Indique visuellement que l'image est chargée
+    $("file-label").innerHTML = "✓";
   };
   reader.readAsDataURL(file);
 };
@@ -456,7 +458,7 @@ function renderWelcome() {
   $("msg-list").innerHTML = `
     <div class="message assistant">
       <div style="font-size:10px; color:var(--cyan); margin-bottom:4px; font-weight:600;">▸ CENTRAL INTELLIGENCE</div>
-      <strong>Système d'analyse de vision activé !</strong> Tu peux maintenant m'envoyer du texte ou importer une capture d'écran avec le bouton <b>📎</b> à côté de la barre de texte. Pense à sélectionner un modèle compatible comme <b>Mistral Omega</b> ou <b>Pixtral</b> en haut !
+      <strong>Zone de saisie surélevée !</strong> Une marge de sécurité a été ajoutée sous le formulaire pour que tu puisses taper confortablement sur ton mobile sans toucher les boutons système du téléphone par erreur.
     </div>
   `;
 }
@@ -465,14 +467,10 @@ async function sendMessage() {
   const txt = $("user-input").value.trim();
   if (!txt && !currentBase64Image) return;
 
-  // Sauvegarde des données de l'image actuelle pour l'affichage et l'envoi
   const tempImage = currentBase64Image;
-
-  // Ajout du message utilisateur dans l'historique local
   state.messages.push({ role: "user", content: txt, image: tempImage });
   renderMessages();
   
-  // Réinitialisation de la zone de texte et du bouton d'import
   $("user-input").value = "";
   currentBase64Image = null;
   $("file-input").value = "";
@@ -481,21 +479,17 @@ async function sendMessage() {
 
   const typing = document.createElement("div");
   typing.className = "message assistant";
-  typing.innerHTML = `<div style="font-size:10px; color:var(--cyan); margin-bottom:4px; font-weight:600;">▸ STUDIO INTELLIGENCE</div><div>Analyse contextuelle et visuelle en cours...</div>`;
+  typing.innerHTML = `<div style="font-size:10px; color:var(--cyan); margin-bottom:4px; font-weight:600;">▸ STUDIO INTELLIGENCE</div><div>Analyse en cours...</div>`;
   $("msg-list").appendChild(typing);
   $("chat-container").scrollTop = $("chat-container").scrollHeight;
 
   const selectedModel = $("model-select").value;
-
-  // Formatage des messages pour l'API Mistral (Texte ou Vision multi-modal)
   let apiMessages = [
-    { role: "system", content: "Tu es MANIL704 Studio Intelligence. Tu es un modèle multi-modal capable d'analyser à la fois le texte et les images/captures d'écran (statistiques de rétention, designs de miniatures, scripts). Utilise toujours le format Markdown." }
+    { role: "system", content: "Tu es MANIL704 Studio Intelligence. Utilise toujours le format Markdown." }
   ];
 
-  // Construction de l'historique pour l'API
   state.messages.forEach(m => {
     if (m.image) {
-      // Structure Multi-modale demandée par Mistral pour la Vision
       apiMessages.push({
         role: m.role,
         content: [
@@ -512,10 +506,7 @@ async function sendMessage() {
     const res = await fetch("https://api.mistral.ai/v1/chat/completions", {
       method: "POST",
       headers: { "Authorization": "Bearer " + state.apiKey, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: selectedModel,
-        messages: apiMessages
-      })
+      body: JSON.stringify({ model: selectedModel, messages: apiMessages })
     });
     
     typing.remove();
@@ -524,7 +515,7 @@ async function sendMessage() {
     state.messages.push({ role: "assistant", content: data.choices[0].message.content });
     renderMessages();
   } catch(e) {
-    typing.innerHTML = `<div style="font-size:10px; color:var(--danger); margin-bottom:4px; font-weight:600;">▸ STATUS ERROR</div><div>Erreur d'analyse. Vérifie que le modèle sélectionné prend en charge la Vision.</div>`;
+    typing.innerHTML = `<div style="font-size:10px; color:var(--danger); margin-bottom:4px; font-weight:600;">▸ STATUS ERROR</div><div>Erreur d'analyse API.</div>`;
   }
 }
 
@@ -533,7 +524,7 @@ function renderMessages() {
     <div class="message ${m.role}">
       <div style="font-size:10px; color:var(--cyan); margin-bottom:4px; font-weight:600;">${m.role==='user'?'▸ UNIQUE DIRECTIVE':'▸ STUDIO INTELLIGENCE'}</div>
       <div style="white-space: pre-wrap;">${parseMarkdown(m.content)}</div>
-      ${m.image ? `<img src="${m.image}" alt="Capture d'écran importée" />` : ''}
+      ${m.image ? `<img src="${m.image}" alt="Capture d'écran" />` : ''}
     </div>
   `).join('');
   $("chat-container").scrollTop = $("chat-container").scrollHeight;
@@ -547,9 +538,7 @@ $("btn-new").onclick = () => { state.messages = []; renderWelcome(); };
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').then(() => {
-      console.log('MANIL704 STUDIO PWA Vision prête.');
-    }).catch(err => console.log('Erreur SW:', err));
+    navigator.serviceWorker.register('./sw.js');
   });
 }
 </script>
