@@ -410,27 +410,27 @@ body {
 
 <script>
 const OFFICIAL_21_AGENTS = [
-  { name: "Monétisation Tiktok", tag: "Business" },
-  { name: "Scénariste C-Drama", tag: "Script" },
-  { name: "Analyseur Rétention 61s", tag: "Analyse" },
-  { name: "Générateur de Hooks", tag: "Marketing" },
-  { name: "Optimiseur de Live", tag: "Live" },
-  { name: "Spécialiste K-Drama", tag: "Script" },
-  { name: "Créateur de Titres Viraux", tag: "SEO" },
-  { name: "Concepteur Miniatures", tag: "Design" },
-  { name: "Analyseur de Concurrence", tag: "Data" },
-  { name: "Rédacteur Description", tag: "Tiktok" },
-  { name: "Planificateur de Live", tag: "Stratégie" },
-  { name: "Gestionnaire Clifhangers", tag: "Structure" },
-  { name: "Auditeur Rythme Vidéo", tag: "Montage" },
-  { name: "Tracker de Algorithme", tag: "Analyse" },
-  { name: "Traducteur Sous-titres", tag: "Contenu" },
-  { name: "Optimiseur Tunnel d'Abonnement", tag: "Conversion" },
-  { name: "Spécialiste Trafic manil704.fr", tag: "Redirection" },
-  { name: "Modérateur Chat Automatique", tag: "Live" },
-  { name: "Générateur Idées Tendances", tag: "Viral" },
-  { name: "Expert Rétention Audio", tag: "Musique" },
-  { name: "Superviseur Central Intelligence", tag: "Core" }
+  { name: "Monétisation Tiktok", tag: "Business", prompt: "Agis en tant qu'expert en Monétisation TikTok. Analyse le potentiel de ce concept :" },
+  { name: "Scénariste C-Drama", tag: "Script", prompt: "Agis en tant que Scénariste expert en C-Drama. Rédige un script captivant basé sur :" },
+  { name: "Analyseur Rétention 61s", tag: "Analyse", prompt: "Analyse la structure de ce script pour maximiser la rétention au-delà de 61 secondes :" },
+  { name: "Générateur de Hooks", tag: "Marketing", prompt: "Génère 5 accroches (Hooks) ultra-virales pour cette vidéo :" },
+  { name: "Optimiseur de Live", tag: "Live", prompt: "Donne-moi une stratégie d'animation et de fidélisation pour mon prochain Live TikTok :" },
+  { name: "Spécialiste K-Drama", tag: "Script", prompt: "Agis en tant que Spécialiste K-Drama. Adapte ou crée une scène dramatique forte sur :" },
+  { name: "Créateur de Titres Viraux", tag: "SEO", prompt: "Trouve 10 titres accrocheurs et optimisés SEO TikTok pour :" },
+  { name: "Concepteur Miniatures", tag: "Design", prompt: "Donne-moi un concept visuel détaillé (format 9:16) pour la couverture de :" },
+  { name: "Analyseur de Concurrence", tag: "Data", prompt: "Analyse les tendances actuelles et la concurrence sur ce sujet :" },
+  { name: "Rédacteur Description", tag: "Tiktok", prompt: "Rédige une description TikTok optimisée avec hashtags viraux pour :" },
+  { name: "Planificateur de Live", tag: "Stratégie", prompt: "Crée un planning de contenu et un script de déroulement pour mon Live de 21h :" },
+  { name: "Gestionnaire Clifhangers", tag: "Structure", prompt: "Ajoute un cliffhanger redoutable à la fin de cette séquence :" },
+  { name: "Auditeur Rythme Vidéo", tag: "Montage", prompt: "Donne des instructions de montage et de rythme (coupes, zooms) pour ce texte :" },
+  { name: "Tracker de Algorithme", tag: "Analyse", prompt: "Quelles sont les dernières règles de l'algorithme TikTok à respecter pour :" },
+  { name: "Traducteur Sous-titres", tag: "Contenu", prompt: "Traduis et adapte ces sous-titres pour garder un impact maximal en français :" },
+  { name: "Optimiseur Tunnel d'Abonnement", tag: "Conversion", prompt: "Comment transformer les spectateurs de cette vidéo en abonnés qualifiés :" },
+  { name: "Spécialiste Trafic manil704.fr", tag: "Redirection", prompt: "Crée un appel à l'action (CTA) fluide pour rediriger l'audience vers manil704.fr :" },
+  { name: "Modérateur Chat Automatique", tag: "Live", prompt: "Génère une liste de mots-clés à bloquer et de réponses automatiques pour :" },
+  { name: "Générateur Idées Tendances", tag: "Viral", prompt: "Trouve 3 concepts de vidéos innovants surfant sur les tendances actuelles pour :" },
+  { name: "Expert Rétention Audio", tag: "Musique", prompt: "Quel type de sound design ou musique de fond devrais-je utiliser pour accentuer le drame de :" },
+  { name: "Superviseur Central Intelligence", tag: "Core", prompt: "Prends du recul et fais une synthèse stratégique globale de ce projet :" }
 ];
 
 let state = { apiKey: localStorage.getItem('manil_key') || '', messages: [] };
@@ -471,21 +471,25 @@ $("wizard-continue-btn").onclick = function() {
 
 function generate21Agents() {
   const container = $("sidebar-agents-list");
-  container.innerHTML = OFFICIAL_21_AGENTS.map(agent => `
-    <div class="agent-item">
+  container.innerHTML = OFFICIAL_21_AGENTS.map((agent, index) => `
+    <div class="agent-item" style="cursor: pointer;" onclick="selectAgent(${index})">
       <span>◈ ${agent.name}</span>
       <span class="agent-tag">${agent.tag}</span>
     </div>
   `).join('');
 }
 
-// Interpréteur Markdown Simplifié et Robuste
+window.selectAgent = function(index) {
+  const agent = OFFICIAL_21_AGENTS[index];
+  $("user-input").value = agent.prompt + " ";
+  $("user-input").focus();
+};
+
 function parseMarkdown(text) {
   let html = text;
-  // Conversion du gras (**texte**)
   html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-  // Conversion de l'italique (*texte*)
   html = html.replace(/\*(.*?)\*/g, '<i>$1</i>');
+  html = html.replace(/^- (.*?)$/gm, '• $1');
   return html;
 }
 
@@ -493,7 +497,7 @@ function renderWelcome() {
   $("msg-list").innerHTML = `
     <div class="message assistant">
       <div style="font-size:10px; color:var(--cyan); margin-bottom:4px; font-weight:600;">▸ CENTRAL INTELLIGENCE</div>
-      <strong>Félicitations, installation validée !</strong> Ton équipe de 21 agents spécialisés a été déployée avec succès dans ton Workspace. Ton accès au modèle de Mistral AI est opérationnel. Transmets tes directives pour tes scripts de plus de 61 secondes ou tes stratégies de redirection !
+      <strong>Félicitations, installation validée !</strong> Ton équipe de 21 agents spécialisés a été déployée avec succès dans ton Workspace. Ton accès au modèle de Mistral AI est opérationnel. Sélectionne un agent à gauche ou transmets directement tes directives !
     </div>
   `;
 }
@@ -512,12 +516,14 @@ async function sendMessage() {
   $("msg-list").appendChild(typing);
   $("chat-container").scrollTop = $("chat-container").scrollHeight;
 
+  const selectedModel = $("model-select").value;
+
   try {
     const res = await fetch("https://api.mistral.ai/v1/chat/completions", {
       method: "POST",
       headers: { "Authorization": "Bearer " + state.apiKey, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "mistral-large-2512",
+        model: selectedModel,
         messages: [{ role: "system", content: "Tu es MANIL704 Studio Intelligence, une IA connectée à un écosystème de 21 agents spécialisés dans la monétisation, l'écriture de C-Dramas/K-Dramas et la création de formats TikTok de plus de 61 secondes. Utilise toujours le format Markdown (* pour l'italique et ** pour le gras) pour structurer tes dialogues et tes indications temporelles." }, ...state.messages]
       })
     });
