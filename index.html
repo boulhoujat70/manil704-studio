@@ -394,9 +394,9 @@ body {
       <div class="dot"></div>
     </div>
 
-    <div class="wizard-title">Bienvenue sur ton Studio IA[cite: 2]</div>
+    <div class="wizard-title">Bienvenue sur ton Studio IA</div>
     <div class="wizard-text">
-      Ton outil de pilotage stratégique configuré pour MANIL704. Commençons par activer ton accès Mistral AI pour générer ton équipe d'agents.[cite: 2]
+      Ton outil de pilotage stratégique configuré pour MANIL704. Commençons par activer ton accès Mistral AI pour générer ton équipe d'agents.
     </div>
 
     <div class="field-group">
@@ -409,7 +409,7 @@ body {
       <input type="text" id="wizard-ia-name" class="field-input" value="MANIL704">
     </div>
 
-    <button class="wizard-btn" id="wizard-continue-btn">Continuer ➔[cite: 2]</button>
+    <button class="wizard-btn" id="wizard-continue-btn">Continuer ➔</button>
   </div>
 </div>
 
@@ -455,11 +455,11 @@ $("wizard-continue-btn").onclick = function() {
   const name = $("wizard-ia-name").value.trim();
 
   if (!key) {
-    alert("Veuillez coller votre clé API Mistral pour continuer.");[cite: 2]
+    alert("Veuillez coller votre clé API Mistral pour continuer.");
     return;
   }
   if (!name) {
-    alert("Veuillez donner un nom à votre instance de travail.");[cite: 2]
+    alert("Veuillez donner un nom à votre instance de travail.");
     return;
   }
 
@@ -492,7 +492,7 @@ window.selectAgent = function(index) {
 
 function parseMarkdown(text) {
   let html = text;
-  html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*\*(.*?)\*\"/g, '<strong>$1</strong>');
   html = html.replace(/\*(.*?)\*/g, '<i>$1</i>');
   html = html.replace(/^- (.*?)$/gm, '• $1');
   return html;
@@ -559,7 +559,6 @@ $("user-input").onkeydown = function(e) { if (e.key === "Enter") sendMessage(); 
 $("btn-clear").onclick = () => { state.messages = []; renderWelcome(); };
 $("btn-new").onclick = () => { state.messages = []; renderWelcome(); };
 
-// Enregistrement Automatique du Service Worker pour l'installation PWA
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./sw.js').then(() => {
