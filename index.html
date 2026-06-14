@@ -181,4 +181,384 @@ body {
   line-height: 1.5;
   font-size: 14px;
 }
-.
+.message.user {
+  background: rgba(212,175,55,0.08);
+  border: 1px solid var(--cyan);
+  align-self: flex-end;
+  margin-left: auto;
+}
+.message.assistant {
+  background: var(--hull);
+  border: 1px solid var(--wire);
+  align-self: flex-start;
+}
+.message b, .message strong {
+  color: var(--cyan);
+  font-weight: 600;
+}
+.message img {
+  max-width: 100%;
+  max-height: 250px;
+  border-radius: 6px;
+  margin-top: 8px;
+  border: 1px solid var(--wire);
+  display: block;
+}
+
+#input-area {
+  background: var(--deep);
+  border-top: var(--hud-border);
+  padding: 12px 12px 30px 12px;
+  padding-bottom: calc(20px + env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+#user-input {
+  flex: 1;
+  background: var(--hull);
+  border: 1px solid var(--wire);
+  color: #fff;
+  padding: 12px;
+  border-radius: 6px;
+  outline: none;
+  font-size: 16px;
+}
+#send-btn {
+  background: var(--cyan);
+  color: #000;
+  font-weight: 700;
+  font-family: var(--font-display);
+  border: none;
+  padding: 12px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.file-label-btn {
+  background: var(--hull);
+  border: var(--hud-border);
+  color: var(--cyan);
+  padding: 10px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.file-label-btn.has-file {
+  background: rgba(0, 255, 157, 0.1);
+  border-color: var(--success);
+  color: var(--success);
+}
+#file-input {
+  display: none;
+}
+
+#toggle-sidebar-btn { display: none; }
+
+@media (max-width: 768px) {
+  #studio-header { padding: 0 10px; }
+  .brand-name { font-size: 16px; letter-spacing: 2px; }
+  .hud-select { max-width: 120px; font-size: 11px; padding: 4px 6px; }
+  .hud-btn { padding: 6px 10px; font-size: 11px; }
+  .status-pill { display: none; }
+  #agents-sidebar {
+    position: absolute; top: 0; left: 0; bottom: 0;
+    transform: translateX(-100%);
+    box-shadow: 5px 0 15px rgba(0,0,0,0.7);
+  }
+  #agents-sidebar.open { transform: translateX(0); }
+  #toggle-sidebar-btn {
+    display: block; background: var(--hull); border: var(--hud-border);
+    color: var(--cyan); font-family: var(--font-mono); font-size: 11px;
+    padding: 6px 10px; border-radius: 4px; margin-right: 5px;
+  }
+}
+
+/* FIX COMPLET DE L'ÉCRAN NOIR INTERFACE DESKTOP / MOBILE */
+#setup-wizard-overlay {
+  position: fixed; 
+  inset: 0; 
+  background: rgba(5, 5, 5, 0.95); 
+  z-index: 3000;
+  display: none; 
+  align-items: center; 
+  justify-content: center; 
+  backdrop-filter: blur(10px); 
+  padding: 15px;
+}
+#setup-wizard-overlay.active { 
+  display: flex; 
+}
+.wizard-box {
+  background: var(--deep); 
+  border: var(--hud-border); 
+  width: 100%; 
+  max-width: 500px; 
+  border-radius: 8px; 
+  padding: 25px; 
+  text-align: center;
+  box-shadow: 0 0 40px rgba(212,175,55,0.2);
+}
+.wizard-logo { font-family: var(--font-display); font-size: 26px; font-weight: 900; letter-spacing: 4px; color: var(--text-bright); text-shadow: 0 0 20px rgba(212,175,55,0.5); margin-bottom: 5px; }
+.wizard-sub { font-family: var(--font-mono); font-size: 10px; color: var(--cyan); letter-spacing: 2px; margin-bottom: 20px; }
+.wizard-title { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 10px; }
+.wizard-text { font-size: 12px; color: var(--text-dim); line-height: 1.5; margin-bottom: 20px; }
+.field-group { text-align: left; margin-bottom: 15px; }
+.field-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: var(--cyan); margin-bottom: 6px; display: block; }
+.field-input { width: 100%; background: var(--hull); border: var(--hud-border); color: #fff; padding: 10px; border-radius: 6px; font-size: 13px; }
+.wizard-btn { width: 100%; background: linear-gradient(135deg, rgba(212,175,55,0.2), rgba(212,175,55,0.05)); border: 1px solid var(--cyan); color: var(--cyan); font-family: var(--font-display); font-size: 12px; font-weight: 700; padding: 12px; border-radius: 6px; letter-spacing: 2px; text-transform: uppercase; margin-top: 10px; }
+</style>
+</head>
+<body>
+
+<header id="studio-header">
+  <div class="brand" style="display: flex; align-items: center;">
+    <button id="toggle-sidebar-btn" onclick="toggleSidebar()">☰ AGENTS</button>
+    <span class="brand-name">MANIL704</span>
+  </div>
+  <div style="display:flex; gap:6px; align-items:center;">
+    <select id="model-select" class="hud-select">
+      <option value="mistral-large-2512">🔥 Mistral Omega</option>
+      <option value="pixtral-12b-latest">👁️ Pixtral</option>
+      <option value="codestral-2508">💻 CodeForge</option>
+    </select>
+    <span id="global-status" class="status-pill">OFFLINE</span>
+    <button class="hud-btn" id="btn-clear">⌫</button>
+    <button class="hud-btn" id="btn-new">+ NEW</button>
+  </div>
+</header>
+
+<div id="main-layout">
+  <aside id="agents-sidebar">
+    <div class="sidebar-title">⬡ EQUIPE TECHNIQUE (21)</div>
+    <div class="agents-list" id="sidebar-agents-list">
+      <div style="color:var(--text-dim); font-size:11px; padding:10px; text-align:center;">En attente de configuration...</div>
+    </div>
+  </aside>
+
+  <section id="chat-space">
+    <div id="chat-container">
+      <div id="msg-list"></div>
+    </div>
+    
+    <div id="input-area">
+      <label for="file-input" id="file-label" class="file-label-btn" title="Ajouter une capture d'écran">📎</label>
+      <input type="file" id="file-input" accept="image/*" onchange="handleFileSelect(this)">
+      
+      <input type="text" id="user-input" placeholder="Directives ou résumés...">
+      <button id="send-btn">SEND ▶</button>
+    </div>
+  </section>
+</div>
+
+<div id="setup-wizard-overlay" class="active">
+  <div class="wizard-box">
+    <div class="wizard-logo">MANIL704</div>
+    <div class="wizard-sub">STUDIO AI PLATFORM v3.0</div>
+    <div class="wizard-title">Bienvenue sur ton Studio IA</div>
+    <div class="wizard-text">Ton outil de pilotage stratégique configuré pour MANIL704. Active ton accès Mistral AI pour charger l'équipe d'agents.</div>
+    <div class="field-group">
+      <label class="field-label">🔑 Clé API Mistral *</label>
+      <input type="password" id="wizard-api-key" class="field-input" placeholder="Clé API Mistral (sk-...)">
+    </div>
+    <div class="field-group">
+      <label class="field-label">⚙ Nom du Workspace *</label>
+      <input type="text" id="wizard-ia-name" class="field-input" value="MANIL704">
+    </div>
+    <button class="wizard-btn" id="wizard-continue-btn">Continuer ➔</button>
+  </div>
+</div>
+
+<script>
+const OFFICIAL_21_AGENTS = [
+  { name: "Monétisation Tiktok", tag: "Business", prompt: "Agis en tant qu'expert en Monétisation TikTok. Analyse le potentiel de ce concept :" },
+  { name: "Scénariste C-Drama", tag: "Script", prompt: "Agis en tant que Scénariste expert en C-Drama. Rédige un script captivant basé sur :" },
+  { name: "Analyseur Rétention 61s", tag: "Analyse", prompt: "Analyse la structure de ce script ou de cette capture d'écran de statistiques pour maximiser la rétention au-delà de 61 secondes :" },
+  { name: "Générateur de Hooks", tag: "Marketing", prompt: "Génère 5 accroches (Hooks) ultra-virales pour cette vidéo :" },
+  { name: "Optimiseur de Live", tag: "Live", prompt: "Donne-moi une stratégie d'animation et de fidélisation pour mon prochain Live TikTok :" },
+  { name: "Spécialiste K-Drama", tag: "Script", prompt: "Agis en tant que Spécialiste K-Drama. Adapte ou crée une scène dramatique forte sur :" },
+  { name: "Créateur de Titres Viraux", tag: "SEO", prompt: "Trouve 10 titres accrocheurs et optimisés SEO TikTok pour :" },
+  { name: "Concepteur Miniatures", tag: "Design", prompt: "Donne-moi ton avis sur cette capture d'écran/image ou propose-moi un concept visuel format 9:16 pour :" },
+  { name: "Analyseur de Concurrence", tag: "Data", prompt: "Analyse les tendances actuelles et la concurrence sur ce sujet :" },
+  { name: "Rédacteur Description", tag: "Tiktok", prompt: "Rédige une description TikTok optimisée avec hashtags viraux pour :" },
+  { name: "Planificateur de Live", tag: "Stratégie", prompt: "Crée un planning de contenu et un script de déroulement pour mon Live de 21h :" },
+  { name: "Gestionnaire Clifhangers", tag: "Structure", prompt: "Ajoute un cliffhanger redoutable à la fin de cette séquence :" },
+  { name: "Auditeur Rythme Vidéo", tag: "Montage", prompt: "Donne des instructions de montage et de rythme (coupes, zooms) pour ce texte ou ce visuel :" },
+  { name: "Tracker de Algorithme", tag: "Analyse", prompt: "Quelles sont les dernières règles de l'algorithme TikTok à respecter pour :" },
+  { name: "Traducteur Sous-titres", tag: "Contenu", prompt: "Traduis et adapte ces sous-titres pour garder un impact maximal en français :" },
+  { name: "Optimiseur Tunnel d'Abonnement", tag: "Conversion", prompt: "Comment transformer les spectateurs de cette vidéo en abonnés qualifiés :" },
+  { name: "Spécialiste Trafic manil704.fr", tag: "Redirection", prompt: "Crée un appel à l'action (CTA) fluide pour rediriger l'audience vers manil704.fr :" },
+  { name: "Modérateur Chat Automatique", tag: "Live", prompt: "Génère une liste de mots-clés à bloquer et de réponses automatiques pour :" },
+  { name: "Générateur Idées Tendances", tag: "Viral", prompt: "Trouve 3 concepts de vidéos innovants surfant sur les tendances actuelles pour :" },
+  { name: "Expert Rétention Audio", tag: "Musique", prompt: "Quel type de sound design ou musique de fond devrais-je utiliser pour accentuer le drame de :" },
+  { name: "Superviseur Central Intelligence", tag: "Core", prompt: "Prends du recul et fais une synthèse stratégique globale de ce projet ou de ce visuel :" }
+];
+
+let state = { apiKey: localStorage.getItem('manil_key') || '', messages: [] };
+let currentBase64Image = null;
+
+const $ = s => document.getElementById(s);
+
+window.toggleSidebar = function() {
+  $("agents-sidebar").classList.toggle("open");
+};
+
+if (state.apiKey) {
+  $("global-status").classList.add("active");
+  $("global-status").innerHTML = "● ONLINE";
+  $("setup-wizard-overlay").classList.remove("active");
+  generate21Agents();
+  renderWelcome();
+}
+
+$("wizard-continue-btn").onclick = function() {
+  const key = $("wizard-api-key").value.trim();
+  const name = $("wizard-ia-name").value.trim();
+
+  if (!key) { alert("Veuillez coller votre clé API Mistral."); return; }
+  if (!name) { alert("Veuillez donner un nom au Workspace."); return; }
+
+  localStorage.setItem('manil_key', key);
+  state.apiKey = key;
+  $("global-status").classList.add("active");
+  $("global-status").innerHTML = "● ONLINE";
+  $("setup-wizard-overlay").classList.remove("active");
+  generate21Agents();
+  renderWelcome();
+};
+
+function generate21Agents() {
+  const container = $("sidebar-agents-list");
+  if(!container) return;
+  container.innerHTML = OFFICIAL_21_AGENTS.map((agent, index) => `
+    <div class="agent-item" style="cursor: pointer;" onclick="selectAgent(${index})">
+      <span>◈ ${agent.name}</span>
+      <span class="agent-tag">${agent.tag}</span>
+    </div>
+  `).join('');
+}
+
+window.selectAgent = function(index) {
+  const agent = OFFICIAL_21_AGENTS[index];
+  $("user-input").value = agent.prompt + " ";
+  $("agents-sidebar").classList.remove("open");
+  $("user-input").focus();
+};
+
+window.handleFileSelect = function(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    currentBase64Image = e.target.result;
+    $("file-label").classList.add("has-file");
+    $("file-label").innerHTML = "✓";
+  };
+  reader.readAsDataURL(file);
+};
+
+function parseMarkdown(text) {
+  if(!text) return "";
+  let html = text;
+  html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*(.*?)\*/g, '<i>$1</i>');
+  html = html.replace(/^- (.*?)$/gm, '• $1');
+  return html;
+}
+
+function renderWelcome() {
+  $("msg-list").innerHTML = `
+    <div class="message assistant">
+      <div style="font-size:10px; color:var(--cyan); margin-bottom:4px; font-weight:600;">▸ CENTRAL INTELLIGENCE</div>
+      <strong>Système relancé avec succès !</strong> L'affichage multi-support est maintenant totalement équilibré. Tu peux utiliser ton studio sur PC et mobile en toute fluidité.
+    </div>
+  `;
+}
+
+async function sendMessage() {
+  const txt = $("user-input").value.trim();
+  if (!txt && !currentBase64Image) return;
+
+  const tempImage = currentBase64Image;
+  state.messages.push({ role: "user", content: txt, image: tempImage });
+  renderMessages();
+  
+  $("user-input").value = "";
+  currentBase64Image = null;
+  $("file-input").value = "";
+  $("file-label").classList.remove("has-file");
+  $("file-label").innerHTML = "📎";
+
+  const typing = document.createElement("div");
+  typing.className = "message assistant";
+  typing.innerHTML = `<div style="font-size:10px; color:var(--cyan); margin-bottom:4px; font-weight:600;">▸ STUDIO INTELLIGENCE</div><div>Analyse en cours...</div>`;
+  $("msg-list").appendChild(typing);
+  $("chat-container").scrollTop = $("chat-container").scrollHeight;
+
+  const selectedModel = $("model-select").value;
+  let apiMessages = [
+    { role: "system", content: "Tu es MANIL704 Studio Intelligence. Utilise toujours le format Markdown." }
+  ];
+
+  state.messages.forEach(m => {
+    if (m.image) {
+      apiMessages.push({
+        role: m.role,
+        content: [
+          { type: "text", text: m.content || "Analyse cette capture d'écran." },
+          { type: "image_url", image_url: { url: m.image } }
+        ]
+      });
+    } else {
+      apiMessages.push({ role: m.role, content: m.content });
+    }
+  });
+
+  try {
+    const res = await fetch("https://api.mistral.ai/v1/chat/completions", {
+      method: "POST",
+      headers: { "Authorization": "Bearer " + state.apiKey, "Content-Type": "application/json" },
+      body: JSON.stringify({ model: selectedModel, messages: apiMessages })
+    });
+    
+    typing.remove();
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+    state.messages.push({ role: "assistant", content: data.choices[0].message.content });
+    renderMessages();
+  } catch(e) {
+    typing.innerHTML = `<div style="font-size:10px; color:var(--danger); margin-bottom:4px; font-weight:600;">▸ STATUS ERROR</div><div>Erreur d'analyse API.</div>`;
+  }
+}
+
+function renderMessages() {
+  $("msg-list").innerHTML = state.messages.map(m => `
+    <div class="message ${m.role}">
+      <div style="font-size:10px; color:var(--cyan); margin-bottom:4px; font-weight:600;">${m.role==='user'?'▸ UNIQUE DIRECTIVE':'▸ STUDIO INTELLIGENCE'}</div>
+      <div style="white-space: pre-wrap;">${parseMarkdown(m.content)}</div>
+      ${m.image ? `<img src="${m.image}" alt="Capture d'écran" />` : ''}
+    </div>
+  `).join('');
+  $("chat-container").scrollTop = $("chat-container").scrollHeight;
+}
+
+$("send-btn").onclick = sendMessage;
+$("user-input").onkeydown = function(e) { if (e.key === "Enter") sendMessage(); };
+
+$("btn-clear").onclick = () => { state.messages = []; renderWelcome(); };
+$("btn-new").onclick = () => { state.messages = []; renderWelcome(); };
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js');
+  });
+}
+</script>
+</body>
+</html>
